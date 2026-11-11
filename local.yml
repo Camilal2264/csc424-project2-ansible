@@ -157,10 +157,12 @@
     #
     # TODO: Remove the passwordless-sudo (NOPASSWD) rule
     #   (module: ansible.builtin.file  state: absent)
-     - name: B2 - Remove instructor passwordless sudo rule
+    - name: B2 - Remove instructor passwordless sudo rule
       ansible.builtin.file:
         path: /etc/sudoers.d/90-course-nopasswd
         state: absent    
+    #
+    # TODO: Remove the unexpected SUID-root binary
     #   (module: ansible.builtin.file  state: absent  — or fix the mode)
 
     - name: B3 - Remove SUID from diagtool
