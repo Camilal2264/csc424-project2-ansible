@@ -157,21 +157,10 @@
     #
     # TODO: Remove the passwordless-sudo (NOPASSWD) rule
     #   (module: ansible.builtin.file  state: absent)
-
-    - name: B2 - Remove instructor NOPASSWD rule
+     - name: B2 - Remove instructor passwordless sudo rule
       ansible.builtin.file:
         path: /etc/sudoers.d/90-course-nopasswd
-        state: absent
-
-    - name: B2 - Require password for ubuntu sudo access
-      ansible.builtin.lineinfile:
-        path: /etc/sudoers.d/90-cloud-init-users
-        regexp: '^ubuntu ALL='
-        line: 'ubuntu ALL=(ALL) ALL'
-        validate: '/usr/sbin/visudo -cf %s'
-
-    #
-    # TODO: Remove the unexpected SUID-root binary
+        state: absent    
     #   (module: ansible.builtin.file  state: absent  — or fix the mode)
 
     - name: B3 - Remove SUID from diagtool
@@ -215,15 +204,17 @@
 
     # TODO: Scope the webapp account to only what it needs (see the inventory)
 
+    
     - name: C1 - Restrict webapp database privileges
       community.mysql.mysql_user:
         name: webapp
         host: '%'
-        priv: 'shopdb.*:SELECT,INSERT,UPDATE,DELETE'
+        priv: '*.*:USAGE/shopdb.*:SELECT,INSERT,UPDATE,DELETE'
         append_privs: false
         update_password: on_create
         state: present
         login_unix_socket: /var/run/mysqld/mysqld.sock
+
 
     # TODO: Scope the reporting account to read-only on its DB
 
