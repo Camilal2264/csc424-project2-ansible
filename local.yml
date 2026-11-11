@@ -160,7 +160,16 @@
     - name: B2 - Remove instructor passwordless sudo rule
       ansible.builtin.file:
         path: /etc/sudoers.d/90-course-nopasswd
-        state: absent    
+        state: absent
+    
+    - name: B2 - Require password for ubuntu sudo access
+      ansible.builtin.lineinfile:
+        path: /etc/sudoers.d/90-cloud-init-users
+        regexp: '^ubuntu ALL='
+        line: 'ubuntu ALL=(ALL) ALL'
+        create: false
+        validate: '/usr/sbin/visudo -cf %s'
+    
     #
     # TODO: Remove the unexpected SUID-root binary
     #   (module: ansible.builtin.file  state: absent  — or fix the mode)
